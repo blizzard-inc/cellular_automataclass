@@ -8,6 +8,10 @@ class neighbourhoodcl:
         return self.neighbours[index]
     def __setitem__(self, index, val):
         self.neighbours[index] = val
+    def __str__(self):
+        return str(self.neighbours)
+    def __repr__(self):
+        return self.__str__()
 
 class edgerule:
     """
@@ -22,7 +26,8 @@ class edgerule:
             type = "wrap"
         self.type = type
         self.offset = offset
-        self.const = const
+        self.const= const
+        
     def __call__(self, adress, shape):
         offsetcomp = list(self.offset)
         if len(adress) > len(self.offset):
@@ -30,21 +35,39 @@ class edgerule:
         offsetcomp = tuple(offsetcomp)
         if all([ (0 <= adress[i] + offsetcomp[i] < shape[i]) for i in range(len(adress)) ]):
             return False, tuple(adress)
-        elif type == 'D':
+        elif self.type == 'D':
             return True, self.const
-        elif type == 'N':
+        elif self.type == 'N':
             forwardadress = [( 0 if adress[i] + offsetcomp[i] < 0 else shape[i] - 1) for i in range(len(adress))]
             return False, tuple(forwardadress)
         else:
             forwardadress = [(adress[i] + offsetcomp[i]) % shape[i] for i in range(len(adress))]
             return False, tuple(forwardadress)
 
+    def __str__(self):
+        if self.type == 'N':
+            return f'von Neumann boundary, offsets are {self.offset}'
+        elif self.type == 'D':
+            return f'Dirichlet boundary, constant = {self.const}'
+        else:            
+            return f'wrapping boundary, offsets are {self.offset}'
+    def __repr__(self):
+        return f'edgerule({self.type}, {self.constant},{self.offset}'
 class rule:
-    def __init__(self, neighbourhood : neighbourhoodcl):
+    '''
+    stuff
+    '''
+    def __init__(self, f , neighbourhood : neighbourhoodcl):
         self.neighbourhood = neighbourhood
-    def __call__(self, neighbours):
-        raise NotImplementedError
-
+        self.f = f
+    def __call__(self, neighbours:tuple):
+        return self.f(neighbours)
+        #raise NotImplementedError
+    def __str__(self):
+        return f'rule using function {self.f} and neighbourhood {self.neighbourhood}'
+    def __repr__(self):
+        return f'rule({self.f},{self.neighbourhood})'
+    
 class board:
     """
         dit is de klasse van een bord, met regels voor hoe tegels verbinden
@@ -77,7 +100,7 @@ class board:
         nextboard = emptyboard(self.cells.shape, self.edgerules)
         adressbook = nextstatefunc.neighbourhood
         for index in np.ndenumerate(self.cells):
-            neighbours = self.neighbourhood(index[0], adressbook)
+            neighbours = tuple(self.neighbourhood(index[0], adressbook))
             nextboard.cells[index[0]] = nextstatefunc(neighbours)
             
         self.cells = nextboard.cells
@@ -85,6 +108,18 @@ class board:
         
     def advance(self, steps : int, nextstatefunc : rule):
         pass
+    
+    def __getitem__(self, index):
+        return self.cells[index]
+    
+    def __setitem__(self, index, val):
+        self.cells[index]=val
+        
+    def __str__(self):
+        return str(self.cells)
+    def __repr__(self):
+        return f'board({self.cells},{self.edgerules})'
+    
 class emptyboard(board):
     def __init__(self, dimensions, edgerules):
         cells = np.zeros(dimensions, int)
@@ -101,14 +136,18 @@ class totalistic(rule):
     def __init__(self, neighbourhood : neighbourhoodcl, birth : list, live : list):
         self.birth = birth
         self.live = live
-        super().__init__(neighbourhood)
-    def __call__(self, neighbours : list):
-        birth = neighbours[0] == 0 and sum(neighbours) in self.birth
-        live = neighbours[0] == 1 and sum(neighbours) - 1 in self.live
-        if birth or live:
-            return 1
-        return 0
-
+        def f(neighbours):
+            birth = neighbours[0] == 0 and sum(neighbours) in self.birth
+            live = neighbours[0] == 1 and sum(neighbours) - 1 in self.live
+            if birth or live:
+                return 1
+            return 0
+        super().__init__(f,neighbourhood)
+        
+    def __str__(self):
+        return f"totalistic rule B{''.join([str(i) for i in self.birth])}/S{''.join([str(i) for i in self.live])} with neighbourhood {self.neighbourhood}"
+    def __repr__(self):
+        return f"totalistic(B{''.join([str(i) for i in self.birth])}/S{''.join([str(i) for i in self.live])}, {self.neighbourhood})"
 class moorehood(neighbourhoodcl):
     def __init__(self, dim : int = None, length : int = None):
         if not dim:
@@ -119,7 +158,8 @@ class moorehood(neighbourhoodcl):
             length = 1
         if length < 0:
             raise ValueError
-        
+        self.dim = dim
+        self.length = length
         if length == 0:
             neighbours = [[0] * dim]
         else:
@@ -131,9 +171,17 @@ class moorehood(neighbourhoodcl):
                     for d in range(1, length + 1):
                         neighbours += [current_house + [d], current_house + [-d]]
         super().__init__(neighbours)
+    def __str__(self):
+        return f'moore({self.dim},{self.length})'
 
 class neumannhood(neighbourhoodcl):
-    def __init__(self, dim : int, length : int):
+    def __init__(self, dim : int = None, length : int = None):
+        if not dim:
+            dim = 2
+        if not length:
+            length = 1
+        self.dim = dim
+        self.length = length
         if length == 0:
             neighbours = [[0] * dim]
         else:
@@ -146,8 +194,10 @@ class neumannhood(neighbourhoodcl):
                     for d in range(1, length - distance + 1):
                         neighbours += [current_house + [d], current_house + [-d]]
         super().__init__(neighbours)
+    def __str__(self):
+        return f'Neumann({self.dim},{self.length})'
 '''   
-life = totalistic([(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)], [3], [2, 3])
+life = totalistic(moorehood(2,1), [3], [2, 3])
 torus = edgerule()
 testboard = emptyboard((5, 5), torus)
 testboard.cells[1, 1] = 1
@@ -158,6 +208,29 @@ testboard.cells[3, 1] = 1
 #print(testboard.cells)
 #print(testboard.nextstate(life))
 '''
+
+def r30(neighbourhood):
+    key={(0,0,0):0,
+     (0,0,1):1,
+     (0,1,0):1,
+     (0,1,1):1,
+     (1,0,0):1,
+     (1,0,1):0,
+     (1,1,0):0,
+     (1,1,1):0,
+     }
+    return key[neighbourhood]
+
+rule30 = rule(r30,[(-1,),(0,),(1,)])
+same = edgerule('N')
+testboard = emptyboard((8,),same)
+testboard[1-1]=1
+testboard[4-1]=1
+testboard[5-1]=1
+testboard[7-1]=1
+print(testboard)
+
+
 '''
 if __name__ == '__main__':
     print('starting program\n')
