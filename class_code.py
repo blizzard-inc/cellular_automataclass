@@ -1,5 +1,5 @@
 import numpy as np
-import time
+#import time
 
 class neighbourhoodcl:
     def __init__(self, reladresses : list):
@@ -22,6 +22,7 @@ class edgerule:
             type = "wrap"
         self.type = type
         self.offset = offset
+        self.const = const
     def __call__(self, adress, shape):
         offsetcomp = list(self.offset)
         if len(adress) > len(self.offset):
@@ -30,7 +31,7 @@ class edgerule:
         if all([ (0 <= adress[i] + offsetcomp[i] < shape[i]) for i in range(len(adress)) ]):
             return False, tuple(adress)
         elif type == 'D':
-            return True, const
+            return True, self.const
         elif type == 'N':
             forwardadress = [( 0 if adress[i] + offsetcomp[i] < 0 else shape[i] - 1) for i in range(len(adress))]
             return False, tuple(forwardadress)
