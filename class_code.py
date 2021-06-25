@@ -1,6 +1,14 @@
 import numpy as np
 import time
 
+class neighbourhoodcl:
+    def __init__(self,reladresses:list):
+        self.neighbours=reladresses
+    def __getitem__(self,index):
+        return self.neighbours[index]
+    def __setitem__(self,index,val):
+        self.neighbours[index]=val
+
 class edgerule:
     """
     klasse voor de randvoorwaarden.
@@ -31,7 +39,7 @@ class edgerule:
             return False, tuple(forwardadress)
 
 class rule:
-    def __init__(self,neighbourhood:list):
+    def __init__(self,neighbourhood:neighbourhoodcl):
         self.neighbourhood=neighbourhood
     def __call__(self,neighbours):
         raise NotImplementedError
@@ -87,19 +95,57 @@ class totalistic(rule):
         adresses: lijst relatieve coordinaten waarover de som genomen wordt
         birth: lijst van sommen waarbij de cel levend word
         live: lijst van sommen waarbij de cel levend blijft.
+        !! bij deze sommen wordt de centrale cel niet meegerekend
     """
-    def __init__(self,neighbourhood,birth:list,live:list):
+    def __init__(self,neighbourhood:neighbourhoodcl,birth:list,live:list):
         self.birth=birth
         self.live=live
-        neighbourhood+=[[0]*len(neighbourhood[0])]
         super().__init__(neighbourhood)
     def __call__(self, neighbours:list):
-        birth = neighbours[-1]==0 and sum(neighbours) in self.birth
-        live = neighbours[-1]==1 and sum(neighbours)-1 in self.live
+        birth = neighbours[0]==0 and sum(neighbours) in self.birth
+        live = neighbours[0]==1 and sum(neighbours)-1 in self.live
         if birth or live:
             return 1
         return 0
 
+class moorehood(neighbourhoodcl):
+    def __init__(self,dim:int=None,length:int=None):
+        if not dim:
+            dim=2
+        if dim<1:
+            raise ValueError
+        if not length:
+            length=1
+        if length<0:
+            raise ValueError
+        
+        if length==0:
+            neighbours=[[0]*dim]
+        else:
+            neighbours=[[]]
+            for _ in range(dim):
+                for number in range(len(neighbours)):
+                    current_house=neighbours[number]
+                    neighbours[number]=current_house+[0]
+                    for d in range(1,length+1):
+                        neighbours+=[current_house+[d],current_house+[-d]]
+        super().__init__(neighbours)
+
+class neumannhood(neighbourhoodcl):
+    def __init__(self,dim,length):
+        if length==0:
+            neighbours=[[0]*dim]
+        else:
+            neighbours=[[]]
+            for _ in range(dim):
+                for number in range(len(neighbours)):
+                    current_house=neighbours[number]
+                    neighbours[number]=current_house+[0]
+                    distance=sum([abs(coord) for coord in current_house])
+                    for d in range(1,length-distance+1):
+                        neighbours+=[current_house+[d],current_house+[-d]]
+        super().__init__(neighbours)
+'''   
 life=totalistic([(-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1)],[3],[2,3])
 torus=edgerule()
 testboard=emptyboard((5,5),torus)
@@ -108,8 +154,9 @@ testboard.cells[1,2]=1
 testboard.cells[2,2]=1
 testboard.cells[2,3]=1
 testboard.cells[3,1]=1
-print(testboard.cells)
-print(testboard.nextstate(life))
+#print(testboard.cells)
+#print(testboard.nextstate(life))
+'''
 '''
 if __name__=='__main__':
     print('starting program\n')
