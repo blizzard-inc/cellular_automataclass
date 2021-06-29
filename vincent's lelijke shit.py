@@ -11,8 +11,8 @@ class cellulaire_automata:
     def maak_rooster(self, begin):
         import math
         rooster = [[0]*self.breedte]*self.hoogte
-        lijst1 = [0 for i in range(math.floor((self.breedte-3)/2))] 
-        lijst2 = [0 for i in range(math.ceil((self.breedte-3)/2))]
+        lijst1 = [0]*math.ceil((self.breedte-3)/2)
+        lijst2 = [0]*math.floor((self.breedte-3)/2)
         rooster[0] = lijst1+begin+lijst2
         return rooster
     
@@ -33,24 +33,16 @@ class een_dimensionaal(cellulaire_automata):
         
     def buren(self, begin):
         burenlijst = []
-        lijsta= [self.begin]
         rooster = super().maak_rooster(begin)
+        lijsta = [rooster[0]]
         for i in range(1, self.hoogte):
-            if i == 1:
-                self.breedte = 3
-            else:
-                self.breedte +=  2
-            rooster[i-1]=[0]+rooster[i-1]+[0]
-            for j in range(0,self.breedte+2):
+
+            for j in range(0,self.breedte):
                 burenlijst.append([rooster[i-1][(j-1)%self.breedte], rooster[i-1][j%self.breedte], rooster[i-1][(j+1)%self.breedte]])
             rooster[i] = self.evolueren(burenlijst)
             length = self.breedte + 2
             rooster[i] = rooster[i][:length]
             lijsta.append(rooster[i])
-            for i in range(len(lijsta)):
-                while len(lijsta[i]) < len(lijsta[-1]):
-                    lijsta[i].insert(0,0)
-                    lijsta[i].append(0)
             burenlijst.clear()
         return lijsta
 
@@ -82,5 +74,5 @@ class twee_dimensionaal(cellulaire_automata):
         self.breedte = breedte
     
     
-a = een_dimensionaal(9, 3, [1,1,1], [[1, 1, 1], [1, 1, 0], [1, 0, 1], [0, 0, 0]], [[1, 0, 0], [0, 1, 1], [0, 1, 0], [0, 0, 1]])
+a = een_dimensionaal(9, 7, [1,0,0], [[1, 1, 1], [1, 1, 0], [1, 0, 1], [0, 0, 0]], [[1, 0, 0], [0, 1, 1], [0, 1, 0], [0, 0, 1]])
 print(a)
