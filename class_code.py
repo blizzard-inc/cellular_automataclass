@@ -283,7 +283,7 @@ class Board:
             neighbours += [neighbour]
         return neighbours
         
-    def nextstate(self, nextstatefunc : Rule) -> None:
+    def nextstate(self, nextstatefunc : Rule = None) -> None:
         '''
         determines the next state of the board using the nextstatefunction,
             and changes the board to that state
@@ -298,6 +298,8 @@ class Board:
         None
 
         '''
+        if not nextstatefunc:
+            raise ValueError
         nextboard = Emptyboard(self.cells.shape, self.edgerules)
         adressbook = nextstatefunc.neighbourhood
         for index in np.ndenumerate(self.cells):
@@ -306,22 +308,27 @@ class Board:
             
         self.cells = nextboard.cells
         
-    def advance(self, steps : int, rule : Rule) -> None:
+    def advance(self, rule : Rule = None, steps : int = None) -> None:
         '''
         takes multiple steps at once
 
         Parameters
         ----------
-        steps : int
-            the number of steps to be taken.
         rule : Rule
             the rule with which the next states of the board are to be determined.
+        steps : int, optional
+            the number of steps to be taken. The default is 1
 
         Returns
         -------
         None.
 
-        '''        
+        '''
+        if not rule:
+            raise ValueError
+        if not steps:
+            steps = 1
+
         for _ in range(steps):
             self.nextstate(rule)
     
@@ -618,17 +625,17 @@ class Automata(Board):
             rules = self.rules
         super().nextstate(rules)
     
-    def advance(self, steps : int, rules : Rule = None) -> None:
+    def advance(self, rules : Rule = None,  steps : int = None) -> None:
         '''
         takes multiple steps at once
 
         Parameters
         ----------
-        steps : int
-            the number of steps to be taken.
         rules : Rule, optional
             the rule with which the next states of the board are to be determined.
-                The default is self.rule .
+                The default is self.rule 
+        steps : int, optional
+            the number of steps to be taken. The default is 1
 
         Returns
         -------
@@ -638,7 +645,8 @@ class Automata(Board):
         if not rules:
             rules = self.rules
         super().advance(steps, rules)
-    
+        if not steps:
+            steps = 1
     def __repr__(self) -> str:
         '''
         returns a complete representation of the instance
@@ -665,7 +673,7 @@ print(testboard.cells)
 testboard.advance(6,life)
 print(testboard.cells)
 '''
-
+'''
 def r30(neighbourhood):
     key={(0,0,0):0,
      (0,0,1):1,
@@ -677,8 +685,8 @@ def r30(neighbourhood):
      (1,1,1):0,
      }
     return key[neighbourhood]
-'''
-rule30 = Rule(r30,[(-1,),(0,),(1,)])
+
+rule30 = Rule([(-1,),(0,),(1,)],r30)
 same = Edgerule('N')
 testboard = Emptyboard((8,),same)
 testboard[1-1]=1
@@ -687,6 +695,9 @@ testboard[5-1]=1
 testboard[7-1]=1
 print(testboard)
 
+while input('')!='exit':
+    testboard.nextstate(rule30)
+    print(testboard)
 '''
 '''
 if __name__ == '__main__':
