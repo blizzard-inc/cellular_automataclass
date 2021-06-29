@@ -1,7 +1,10 @@
 import numpy as np
 #import time
 
-class neighbourhoodcl:
+class Neighbourhood:
+    '''
+        hier komt nog iets
+    '''
     def __init__(self, reladresses : list):
         self.neighbours = reladresses
     def __getitem__(self, index):
@@ -11,7 +14,7 @@ class neighbourhoodcl:
     def __str__(self):
         return str(self.neighbours)
 
-class edgerule:
+class Edgerule:
     '''
     klasse voor de randvoorwaarden.
     '''
@@ -50,11 +53,11 @@ class edgerule:
         else:            
             return f'wrapping boundary, offsets are {self.offset}'
 
-class rule:
+class Rule:
     '''
     stuff
     '''
-    def __init__(self, f , neighbourhood : neighbourhoodcl):
+    def __init__(self, f , neighbourhood : Neighbourhood):
         self.neighbourhood = neighbourhood
         self.f = f
     def __call__(self, neighbours:tuple):
@@ -63,7 +66,7 @@ class rule:
     def __str__(self):
         return f'rule using function {self.f} and neighbourhood {self.neighbourhood}'
     
-class board:
+class Board:
     """
         dit is de klasse van een bord, met regels voor hoe tegels verbinden
         (dus met regels voor randvoorwaarden).
@@ -76,7 +79,7 @@ class board:
             als true: waarde is tweede component.
                 anders: waarde is waarde van cel met als adres tweede component.
     """
-    def __init__(self, matrix : np.array, edgerules : edgerule):
+    def __init__(self, matrix : np.array, edgerules : Edgerule):
         self.edgerules = edgerules
         self.cells = matrix
     def neighbourhood(self, index, adresses):
@@ -91,8 +94,8 @@ class board:
             neighbours += [neighbour]
         return neighbours
         
-    def nextstate(self, nextstatefunc : rule):
-        nextboard = emptyboard(self.cells.shape, self.edgerules)
+    def nextstate(self, nextstatefunc : Rule):
+        nextboard = Emptyboard(self.cells.shape, self.edgerules)
         adressbook = nextstatefunc.neighbourhood
         for index in np.ndenumerate(self.cells):
             neighbours = tuple(self.neighbourhood(index[0], adressbook))
@@ -101,7 +104,7 @@ class board:
         self.cells = nextboard.cells
         return nextboard.cells
         
-    def advance(self, steps : int, nextstatefunc : rule):
+    def advance(self, steps : int, rule : Rule):
         for _ in range(steps):
             self.nextstate(rule)
         return self.cells
@@ -115,12 +118,12 @@ class board:
     def __str__(self):
         return str(self.cells)
     
-class emptyboard(board):
+class Emptyboard(Board):
     def __init__(self, dimensions, edgerules):
         cells = np.zeros(dimensions, int)
         super().__init__(cells, edgerules)
 
-class totalistic(rule):
+class Totalistic(Rule):
     """class die specifieke regels makkelijker creëert.
         deze class maakt regels waar de positie van de buren niet uit maakt
         adresses: lijst relatieve coordinaten waarover de som genomen wordt
@@ -128,7 +131,7 @@ class totalistic(rule):
         live: lijst van sommen waarbij de cel levend blijft.
         !! bij deze sommen wordt de centrale cel niet meegerekend
     """
-    def __init__(self, neighbourhood : neighbourhoodcl, birth : list, live : list):
+    def __init__(self, neighbourhood : Neighbourhood, birth : list, live : list):
         self.birth = birth
         self.live = live
         super().__init__(neighbourhood)
@@ -141,7 +144,7 @@ class totalistic(rule):
     def __str__(self):
         return f'totalistic rule B{sum([str(i) for i in self.birth])}/S{sum([str(i) for i in self.live])} with neighbourhood {self.neighbourhood}'
 
-class moorehood(neighbourhoodcl):
+class Moorehood(Neighbourhood):
     def __init__(self, dim : int = None, length : int = None):
         if not dim:
             dim = 2
@@ -167,7 +170,7 @@ class moorehood(neighbourhoodcl):
     def __str__(self):
         return f'moore({self.dim},{self.length})'
 
-class neumannhood(neighbourhoodcl):
+class Neumannhood(Neighbourhood):
     def __init__(self, dim : int = None, length : int = None):
         if not dim:
             dim = 2
@@ -191,20 +194,20 @@ class neumannhood(neighbourhoodcl):
         return f'Neumann({self.dim},{self.length})'
 
 
-class automata(board):
+class Automata(Board):
     '''
         
     '''
-    def __init__(self, matrix : np.array, edgerules: edgerule, rules : rule):
+    def __init__(self, matrix : np.array, edgerules: Edgerule, rules : Rule):
         self.rules=rules
         super().__init__(self, matrix, edgerules)
     
-    def nextstate(self, rules : rule = None):
+    def nextstate(self, rules : Rule = None):
         if not rules:
             rules = self.rules
         super().nextstate(rules)
     
-    def advance(self, steps : int, rules : rule = None):
+    def advance(self, steps : int, rules : Rule = None):
         if not rules:
             rules = self.rules
         super().advance(steps, rules)
@@ -215,8 +218,8 @@ class automata(board):
     
 '''   
 life = totalistic([(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)], [3], [2, 3])
-torus = edgerule()
-testboard = emptyboard((5, 5), torus)
+torus = Edgerule()
+testboard = Emptyboard((5, 5), torus)
 testboard.cells[1, 1] = 1
 testboard.cells[1, 2] = 1
 testboard.cells[2, 2] = 1
@@ -238,9 +241,9 @@ def r30(neighbourhood):
      }
     return key[neighbourhood]
 
-rule30 = rule(r30,[(-1,),(0,),(1,)])
-same = edgerule('N')
-testboard = emptyboard((8,),same)
+rule30 = Rule(r30,[(-1,),(0,),(1,)])
+same = Edgerule('N')
+testboard = Emptyboard((8,),same)
 testboard[1-1]=1
 testboard[4-1]=1
 testboard[5-1]=1
