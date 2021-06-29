@@ -10,20 +10,18 @@ class neighbourhoodcl:
         self.neighbours[index] = val
     def __str__(self):
         return str(self.neighbours)
-    def __repr__(self):
-        return self.__str__()
 
 class edgerule:
-    """
+    '''
     klasse voor de randvoorwaarden.
-    """
+    '''
     def __init__(self, type : str = None, const = None, offset : tuple = None):
         if not const:
             const = 0
         if not offset:
             offset = (0, )
-        if not type:
-            type = "wrap"
+        if not type in ['D','N']:
+            type = 'wrap'
         self.type = type
         self.offset = offset
         self.const= const
@@ -51,8 +49,7 @@ class edgerule:
             return f'Dirichlet boundary, constant = {self.const}'
         else:            
             return f'wrapping boundary, offsets are {self.offset}'
-    def __repr__(self):
-        return f'edgerule({self.type}, {self.constant},{self.offset}'
+
 class rule:
     '''
     stuff
@@ -65,8 +62,6 @@ class rule:
         #raise NotImplementedError
     def __str__(self):
         return f'rule using function {self.f} and neighbourhood {self.neighbourhood}'
-    def __repr__(self):
-        return f'rule({self.f},{self.neighbourhood})'
     
 class board:
     """
@@ -81,7 +76,7 @@ class board:
             als true: waarde is tweede component.
                 anders: waarde is waarde van cel met als adres tweede component.
     """
-    def __init__(self, matrix : np.array, edgerules):
+    def __init__(self, matrix : np.array, edgerules : edgerule):
         self.edgerules = edgerules
         self.cells = matrix
     def neighbourhood(self, index, adresses):
@@ -107,7 +102,9 @@ class board:
         return nextboard.cells
         
     def advance(self, steps : int, nextstatefunc : rule):
-        pass
+        for _ in range(steps):
+            self.nextstate(rule)
+        return self.cells
     
     def __getitem__(self, index):
         return self.cells[index]
@@ -117,8 +114,6 @@ class board:
         
     def __str__(self):
         return str(self.cells)
-    def __repr__(self):
-        return f'board({self.cells},{self.edgerules})'
     
 class emptyboard(board):
     def __init__(self, dimensions, edgerules):
@@ -136,18 +131,16 @@ class totalistic(rule):
     def __init__(self, neighbourhood : neighbourhoodcl, birth : list, live : list):
         self.birth = birth
         self.live = live
-        def f(neighbours):
-            birth = neighbours[0] == 0 and sum(neighbours) in self.birth
-            live = neighbours[0] == 1 and sum(neighbours) - 1 in self.live
-            if birth or live:
-                return 1
-            return 0
-        super().__init__(f,neighbourhood)
-        
+        super().__init__(neighbourhood)
+    def __call__(self, neighbours : list):
+        birth = neighbours[0] == 0 and sum(neighbours) in self.birth
+        live = neighbours[0] == 1 and sum(neighbours) - 1 in self.live
+        if birth or live:
+            return 1
+        return 0
     def __str__(self):
-        return f"totalistic rule B{''.join([str(i) for i in self.birth])}/S{''.join([str(i) for i in self.live])} with neighbourhood {self.neighbourhood}"
-    def __repr__(self):
-        return f"totalistic(B{''.join([str(i) for i in self.birth])}/S{''.join([str(i) for i in self.live])}, {self.neighbourhood})"
+        return f'totalistic rule B{sum([str(i) for i in self.birth])}/S{sum([str(i) for i in self.live])} with neighbourhood {self.neighbourhood}'
+
 class moorehood(neighbourhoodcl):
     def __init__(self, dim : int = None, length : int = None):
         if not dim:
@@ -196,8 +189,32 @@ class neumannhood(neighbourhoodcl):
         super().__init__(neighbours)
     def __str__(self):
         return f'Neumann({self.dim},{self.length})'
+
+
+class automata(board):
+    '''
+        
+    '''
+    def __init__(self, matrix : np.array, edgerules: edgerule, rules : rule):
+        self.rules=rules
+        super().__init__(self, matrix, edgerules)
+    
+    def nextstate(self, rules : rule = None):
+        if not rules:
+            rules = self.rules
+        super().nextstate(rules)
+    
+    def advance(self, steps : int, rules : rule = None):
+        if not rules:
+            rules = self.rules
+        super().advance(steps, rules)
+    
+    def __repr__(self):
+        return f'{self.rules}\n {self.edgerules} \n {self.cells}'
+    
+    
 '''   
-life = totalistic(moorehood(2,1), [3], [2, 3])
+life = totalistic([(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)], [3], [2, 3])
 torus = edgerule()
 testboard = emptyboard((5, 5), torus)
 testboard.cells[1, 1] = 1
