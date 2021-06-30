@@ -78,7 +78,7 @@ class Neighbourhood:
         return self.__str__()
 
 class Edgerule:
-    def __init__(self, type : str = None, const : int = None, offset : tuple = None) -> None:
+    def __init__(self, type : str = None, offset : tuple = None, const : int = None) -> None:
         '''
         creates an instance of the class
 
@@ -87,11 +87,10 @@ class Edgerule:
         type : str, optional
             determines wether dirichlet, neumann or wrapping boundry conditions are used.
                 The default is 'wrap'.
-        const : int, optional
-            the value it returns when type = 'D'. The default is 0.
         offset : tuple, optional
             determines what offset is used in each direction. The default is (0,).
-
+        const : int, optional
+            the value it returns when type = 'D'. The default is 0.
         Returns
         ----------
         None.
@@ -102,6 +101,7 @@ class Edgerule:
             offset = (0, )
         if not type in ['D','N']:
             type = 'wrap'
+            const = 0
         self.type = type
         self.offset = offset
         self.const= const
