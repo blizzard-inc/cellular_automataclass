@@ -98,7 +98,7 @@ class Edgerule:
         '''
         if not const:
             const = 0
-        if not offset:
+        if not offset or type == 'N':
             offset = (0, )
         if not type in ['D','N']:
             type = 'wrap'
@@ -135,7 +135,7 @@ class Edgerule:
         elif self.type == 'D':
             return True, self.const
         elif self.type == 'N':
-            forwardadress = [( 0 if adress[i] + offsetcomp[i] < 0 else shape[i] - 1) for i in range(len(adress))]
+            forwardadress = [( 0 if adress[i] < 0 else shape[i] - 1) for i in range(len(adress))]
             return False, tuple(forwardadress)
         else:
             forwardadress = [(adress[i] + offsetcomp[i]) % shape[i] for i in range(len(adress))]
