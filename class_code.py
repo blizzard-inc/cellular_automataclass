@@ -183,10 +183,9 @@ class Rule:
 
         neighbourhood : Neighbourhood
             the neighbourhood of a generic cell.
-        f : any type, optional
+        f : any type
             function which takes a list of states of the neighbours,
                 and returns the next state. (nextstatefunction)
-            the default is lambda x : x
         
         Returns
         -------
