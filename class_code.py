@@ -18,7 +18,7 @@ class Neighbourhood:
         '''
         self.neighbours = reladresses
 
-    def __getitem__(self, index : tuple) -> int:
+    def __getitem__(self, index : tuple) -> tuple:
         '''
         gives the relative adress of a neighbour
 
@@ -29,7 +29,7 @@ class Neighbourhood:
 
         Returns
         -------
-        int
+        tuple
             the adress of the neighbour.
 
         '''
