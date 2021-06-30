@@ -9,7 +9,7 @@ class Neighbourhood:
         Parameters
         ----------
         reladresses : list
-            DESCRIPTION.
+            relative coordinates of the neighbours of the cell.
 
         Returns
         -------
