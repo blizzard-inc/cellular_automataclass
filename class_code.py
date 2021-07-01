@@ -481,14 +481,14 @@ class Totalistic(Rule):
         '''
         if any([total < 0 for total in birth]):
             raise ValueError('you cannot have a negative amount of living neighbours')
-        if any([total < 0 for total in live]):
-            raise ValueError('you cannot have a negative amount of living neighbours')
         if any([total > len(neighbourhood) for total in birth]):
-            raise ValueError('you cannot have more living neighbours than you have neighbours')
-        if any([total > len(neighbourhood) for total in live]):
             raise ValueError('you cannot have more living neighbours than you have neighbours')
         if any([type(total) != int for total in birth]):
             raise TypeError('you cannot have a non-integer amount of living neighbours')
+        if any([total < 0 for total in live]):
+            raise ValueError('you cannot have a negative amount of living neighbours')
+        if any([total > len(neighbourhood) for total in live]):
+            raise ValueError('you cannot have more living neighbours than you have neighbours')
         if any([type(total) != int for total in live]):
             raise TypeError('you cannot have a non-integer amount of living neighbours')
         self.birth = birth
