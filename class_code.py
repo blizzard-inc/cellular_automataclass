@@ -23,7 +23,7 @@ class Neighbourhood:
             raise TypeError
         self.neighbours = reladresses
 
-    def __getitem__(self, index : index) -> tuple:
+    def __getitem__(self, index : int) -> tuple:
         '''
         gives the relative adress of a neighbour
 
