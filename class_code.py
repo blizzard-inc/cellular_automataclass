@@ -19,6 +19,8 @@ class Neighbourhood:
         dimension = len(reladresses[0])
         if any([len(reladress) != dimension for reladress in reladresses]):
             raise ValueError('The relative coordinates aren\'t all of the same dimension')
+        if any([type(reladress) != tuple for reladress in reladresses]):
+            raise TypeError
         self.neighbours = reladresses
 
     def __getitem__(self, index : tuple) -> tuple:
