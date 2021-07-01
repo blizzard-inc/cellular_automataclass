@@ -290,7 +290,7 @@ class Board:
 
         '''
         if matrix.dtype != int:
-            raise typeError('all cells must have integer type')
+            raise TypeError('all cells must have integer type')
         
         self.edgerules = edgerules
         self.cells = matrix
@@ -453,6 +453,10 @@ class Emptyboard(Board):
         None.
 
         '''
+        if any([length<= 0  for length in dimensions]):
+            raise ValueError('you cannot use non-positive lengths for any dimensions')
+        if any([type(length)!= int for length in dimensions]):
+            raise TypeError('all dimensions for a board must be integers')
         cells = np.zeros(dimensions, int)
         super().__init__(cells, edgerules)
 
