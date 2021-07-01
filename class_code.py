@@ -102,13 +102,15 @@ class Edgerule:
         ----------
         None.
         '''
-        if not const:
-            const = 0
-        if not offset or type in ['D','N']:
-            offset = (0, )
         if not type in ['D','N']:
             type = 'wrap'
-            const = 0
+            const = 0    
+            if not offset :
+                offset = (0, )
+        else:
+            offset = (0, )    
+            if not const:
+                const = 0
         self.type = type
         self.offset = offset
         self.const= const
