@@ -295,7 +295,7 @@ class Board:
         self.edgerules = edgerules
         self.cells = matrix
 
-    def neighbourhood(self, index : tuple, adresses : Neighbourhood) -> list:
+    def neighbourhood(self, index : tuple, reladresses : Neighbourhood) -> list:
         '''
         function for determining the states of the neighbours
 
@@ -317,7 +317,7 @@ class Board:
         if any([type(coordinate)!=int for coordinate in index])
             raise TypeError('the value of the cells must all be of type integer')
         neighbours = []
-        for reladress in adresses:
+        for reladress in reladresses:
             absadress = [index[i] + reladress[i] for i in range(len(index))]
             constant, val = self.edgerules(absadress, self.cells.shape)
             if constant:
@@ -506,6 +506,8 @@ class Totalistic(Rule):
             '''
             if len(neighbours) != len(neighbourhood):
                 raise ValueError('the number of neighbours doesn\'t match with the size of the neighbourhood')
+            if any([neighbour not in [0,1] for neighbour in neighbours):
+                raise TypeError('the state of any cell can only be 0 or 1 with a totalistic rule')
             birth = neighbours[0] == 0 and sum(neighbours) in self.birth
             live = neighbours[0] == 1 and sum(neighbours) - 1 in self.live
             if birth or live:
