@@ -23,13 +23,13 @@ class Neighbourhood:
             raise TypeError
         self.neighbours = reladresses
 
-    def __getitem__(self, index : tuple) -> tuple:
+    def __getitem__(self, index : index) -> tuple:
         '''
         gives the relative adress of a neighbour
 
         Parameters
         ----------
-        index : tuple
+        index : int
             the number of the neighbour.
 
         Returns
@@ -40,15 +40,15 @@ class Neighbourhood:
         '''
         return self.neighbours[index]
 
-    def __setitem__(self, index : tuple, val : int) -> None:
+    def __setitem__(self, index : int, val : tuple) -> None:
         '''
         sets the relative adress of a neighbour
 
         Parameters
         ----------
-        index : tuple
+        index : int
             the number of the neighbour.
-        val : int
+        val : tuple
             the new adress of the neighbour.
 
         Returns
@@ -56,6 +56,8 @@ class Neighbourhood:
         None
 
         '''
+        if len(val) != len(self.neighbours[index]):
+            raise ValueError('the dimension of the new adress doesn\'t match the old one')
         self.neighbours[index] = val
 
     def __str__(self) -> str:
