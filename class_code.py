@@ -20,7 +20,9 @@ class Neighbourhood:
         if any([len(reladress) != dimension for reladress in reladresses]):
             raise ValueError('The relative coordinates aren\'t all of the same dimension')
         if any([type(reladress) != tuple for reladress in reladresses]):
-            raise TypeError
+            raise TypeError('All adresses must be tuples')
+        if any([any([type(coordinate)!= int for coordinate in reladress])for reladress in reladresses]):
+            raise TypeError('All coordinates in adresses should be integers')
         self.neighbours = reladresses
 
     def __getitem__(self, index : int) -> tuple:
@@ -137,12 +139,12 @@ class Edgerule:
         '''
         if len(adress) != len(shape):
             raise ValueError('the adress doesn\'t have as many dimensions as the board')
-        if any([type(length)!=int for length in adress]):
-            raise TypeError('the coordinates of a cell must be integers').
-        if any([lenght<=0 for length in shape]):
+        if any([type(coordinate)!=int for coordinate in adress]):
+            raise TypeError('the coordinates of a cell must be integers')
+        if any([length<=0 for length in shape]):
             raise ValueError('the shape of the board doesn\'t support negative lengths')
         if any([type(length)!=int for length in shape]):
-            raise TypeError('the board must have an integer amount of cells in any direction').
+            raise TypeError('the board must have an integer amount of cells in any direction')
         offsetcomp = list(self.offset)
         if len(adress) > len(self.offset):
             offsetcomp += [0] * (len(adress) - len(self.offset))
