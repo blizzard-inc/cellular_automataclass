@@ -589,6 +589,9 @@ class Moorehood(Neighbourhood):
                     neighbours[number] = current_house + [0]
                     for d in range(1, length + 1):
                         neighbours += [current_house + [d], current_house + [-d]]
+        for number in range(len(neighbours)):
+            neighbours[number]=tuple(neighbours[number])
+        
         super().__init__(neighbours)
 
     def __str__(self) -> str:
@@ -648,6 +651,9 @@ class Neumannhood(Neighbourhood):
                     distance = sum([abs(coord) for coord in current_house])
                     for d in range(1, length - distance + 1):
                         neighbours += [current_house + [d], current_house + [-d]]
+        for number in range(len(neighbours)):
+            neighbours[number]=tuple(neighbours[number])
+        
         super().__init__(neighbours)
 
     def __str__(self) -> str:
