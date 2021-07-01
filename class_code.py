@@ -461,7 +461,7 @@ class Emptyboard(Board):
         super().__init__(cells, edgerules)
 
 class Totalistic(Rule):
-    def __init__(self, neighbourhood : Neighbourhood, birth : list, live : list) -> None:
+    def __init__(self, neighbourhood : Neighbourhood, birth : set, live : set) -> None:
         '''
         creates an instance of this class
 
@@ -469,9 +469,9 @@ class Totalistic(Rule):
         ----------
         neighbourhood : Neighbourhood
             the relative adresses of the neighbours of a generic cell.
-        birth : list
+        birth : set
             list of number of live neighbours for which the current cell will turn alive.
-        live : list
+        live : set
             list of number of live neighbours for which the current cell will stay alive.
 
         Returns
@@ -479,9 +479,33 @@ class Totalistic(Rule):
         None.
 
         '''
+        if any([total < 0 for total in birth]):
+            raise ValueError('you cannot have a negative amount of living neighbours')
+        if any([total < 0 for total in live]):
+            raise ValueError('you cannot have a negative amount of living neighbours')
+        if any([type(total) != int for total in birth]):
+            raise TypeError('you cannot have a non-integer amount of living neighbours')
+        if any([type(total) != int for total in live]):
+            raise TypeError('you cannot have a non-integer amount of living neighbours')
         self.birth = birth
         self.live = live
-        def f(neighbours):
+        def f(neighbours : list)->int:
+            '''
+            returns the next state of a cell based on a list of states of the neighbours
+            
+            Parameters
+            ----------
+            
+            neighbours : list
+                list of states of the neighbours of a cell
+            
+            Returns
+            -------
+                int
+                    next state of the cell
+            '''
+            if len(neighbours) != len(neighbourhood):
+                raise ValueError('the number of neighbours doesn\'t match with the size of the neighbourhood')
             birth = neighbours[0] == 0 and sum(neighbours) in self.birth
             live = neighbours[0] == 1 and sum(neighbours) - 1 in self.live
             if birth or live:
