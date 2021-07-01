@@ -244,7 +244,7 @@ class Rule:
         '''
         if len(neighbours) != len(self.neighbourhood):
             raise ValueError('The number of neighbours doesn\'t match with the neighbourhood of the rule')
-        if any([type(neighbour) != int for neighbour in neighbours])
+        if any([type(neighbour) != int for neighbour in neighbours]):
             raise TypeError('The state of any neighbour is always an integer')
         if not self.f:
             raise ValueError
@@ -316,7 +316,7 @@ class Board:
         '''
         if len(index) != self.cells.ndim:
             raise TypeError('the number of dimensions of the adress don\'t match up with that of the board')
-        if any([type(coordinate)!=int for coordinate in index])
+        if any([type(coordinate)!=int for coordinate in index]):
             raise TypeError('the value of the cells must all be of type integer')
         neighbours = []
         for reladress in reladresses:
@@ -512,7 +512,7 @@ class Totalistic(Rule):
             '''
             if len(neighbours) != len(neighbourhood):
                 raise ValueError('the number of neighbours doesn\'t match with the size of the neighbourhood')
-            if any([neighbour not in [0,1] for neighbour in neighbours):
+            if any([neighbour not in [0,1] for neighbour in neighbours]):
                 raise TypeError('the state of any cell can only be 0 or 1 with a totalistic rule')
             birth = neighbours[0] == 0 and sum(neighbours) in self.birth
             live = neighbours[0] == 1 and sum(neighbours) - 1 in self.live
