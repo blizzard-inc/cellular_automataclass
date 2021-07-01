@@ -573,22 +573,19 @@ class Moorehood(Neighbourhood):
             dim = 2
         if dim < 1:
             raise ValueError
-        if not length:
+        if length == None:
             length = 1
         if length < 0:
             raise ValueError
         self.dim = dim
         self.length = length
-        if length == 0:
-            neighbours = [[0] * dim]
-        else:
-            neighbours=[[]]
-            for _ in range(dim):
-                for number in range(len(neighbours)):
-                    current_house = neighbours[number]
-                    neighbours[number] = current_house + [0]
-                    for d in range(1, length + 1):
-                        neighbours += [current_house + [d], current_house + [-d]]
+        neighbours=[[]]
+        for _ in range(dim):
+            for number in range(len(neighbours)):
+                current_house = neighbours[number]
+                neighbours[number] = current_house + [0]
+                for d in range(1, length + 1):
+                    neighbours += [current_house + [d], current_house + [-d]]
         for number in range(len(neighbours)):
             neighbours[number]=tuple(neighbours[number])
         
@@ -634,23 +631,20 @@ class Neumannhood(Neighbourhood):
             dim = 2
         if dim < 1:
             raise ValueError
-        if not length:
+        if length == None:
             length = 1
         if length < 0:
             raise ValueError
         self.dim = dim
         self.length = length
-        if length == 0:
-            neighbours = [[0] * dim]
-        else:
-            neighbours = [[]]
-            for _ in range(dim):
-                for number in range(len(neighbours)):
-                    current_house = neighbours[number]
-                    neighbours[number] = current_house + [0]
-                    distance = sum([abs(coord) for coord in current_house])
-                    for d in range(1, length - distance + 1):
-                        neighbours += [current_house + [d], current_house + [-d]]
+        neighbours = [[]]
+        for _ in range(dim):
+            for number in range(len(neighbours)):
+                current_house = neighbours[number]
+                neighbours[number] = current_house + [0]
+                distance = sum([abs(coord) for coord in current_house])
+                for d in range(1, length - distance + 1):
+                    neighbours += [current_house + [d], current_house + [-d]]
         for number in range(len(neighbours)):
             neighbours[number]=tuple(neighbours[number])
         
