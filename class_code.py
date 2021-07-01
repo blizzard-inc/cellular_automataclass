@@ -160,7 +160,9 @@ class Edgerule:
         offsetcomp = list(self.offset)
         if len(adress) > len(self.offset):
             offsetcomp += [0] * (len(adress) - len(self.offset))
-        elif 0 not in offsetcomp[:len(adress)]:
+        else:
+            offsetcomp = offsetcomp[:len(adress)]
+        if 0 not in offsetcomp[:len(adress)]:
             raise ValueError('there is no 0 in the relevant offsets')
         offsetcomp = tuple(offsetcomp)
         zeroindex=offsetcomp.index(0)
