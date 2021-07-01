@@ -61,7 +61,19 @@ class Neighbourhood:
         if len(val) != len(self.neighbours[index]):
             raise ValueError('the dimension of the new adress doesn\'t match the old one')
         self.neighbours[index] = val
-
+        
+    def __len__(self) -> int:
+        '''
+        returns the number of neighbours
+        
+        Returns
+        -------
+        int
+            the number of neighbours
+        
+        '''
+        return len(self.neighbours)
+        
     def __str__(self) -> str:
         '''
         returns a readable description of the instance
@@ -228,6 +240,10 @@ class Rule:
         int
             next state of the cell.
         '''
+        if len(neighbours) != len(self.neighbourhood):
+            raise ValueError('The number of neighbours doesn\'t match with the neighbourhood of the rule')
+        if any([type(neighbour) != int for neighbour in neighbours])
+            raise TypeError('The state of any neighbour is always an integer')
         if not self.f:
             raise ValueError
         return self.f(neighbours)
