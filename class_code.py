@@ -289,6 +289,9 @@ class Board:
         None.
 
         '''
+        if matrix.dtype != int:
+            raise typeError('all cells must have integer type')
+        
         self.edgerules = edgerules
         self.cells = matrix
 
@@ -309,6 +312,10 @@ class Board:
             a list of states of the neighbours.
 
         '''
+        if len(index) != self.cells.ndim:
+            raise TypeError('the number of dimensions of the adress don\'t match up with that of the board')
+        if any([type(coordinate)!=int for coordinate in index])
+            raise TypeError('the value of the cells must all be of type integer')
         neighbours = []
         for reladress in adresses:
             absadress = [index[i] + reladress[i] for i in range(len(index))]
@@ -336,7 +343,7 @@ class Board:
 
         '''
         if not nextstatefunc:
-            raise ValueError
+            raise ValueError('a rule must be specified. Are you missing an argument?')
         nextboard = Emptyboard(self.cells.shape, self.edgerules)
         adressbook = nextstatefunc.neighbourhood
         for index in np.ndenumerate(self.cells):
@@ -362,10 +369,11 @@ class Board:
 
         '''
         if not rule:
-            raise ValueError
+            raise ValueError('a rule must be specified. Are you missing an argument?')
         if not steps:
             steps = 1
-
+        if steps < 1:
+            raise ValueError('You cannot make me go backwards, that goes against the second law of thermodynamics')
         for _ in range(steps):
             self.nextstate(rule)
     
