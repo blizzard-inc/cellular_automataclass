@@ -152,7 +152,7 @@ class Edgerule:
             raise ValueError('there is no 0 in the relevant offsets')
         offsetcomp = tuple(offsetcomp)
         zeroindex=offsetcomp.index(0)
-        if all([ (0 <= adress[i] + offsetcomp[i] < shape[i]) for i in range(len(adress)) ]):
+        if all([ (0 <= adress[i] < shape[i]) for i in range(len(adress)) ]):
             return False, tuple(adress)
         elif self.type == 'D':
             return True, self.const
