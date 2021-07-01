@@ -129,7 +129,7 @@ class Edgerule:
         second element = either the value of the cell, or the 'real' adress of the cell
 
         '''
-        if len(adress) != len(dimensions):
+        if len(adress) != len(shape):
             raise ValueError('the adress doesn\'t have as many dimensions as the board')
         offsetcomp = list(self.offset)
         if len(adress) > len(self.offset):
