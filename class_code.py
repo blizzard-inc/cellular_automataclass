@@ -113,7 +113,7 @@ class Edgerule:
                 const = 0
         self.type = type
         self.offset = offset
-        self.const= const
+        self.const = const
         
     def __call__(self, adress : tuple, shape : tuple) -> tuple:
         '''
@@ -137,6 +137,12 @@ class Edgerule:
         '''
         if len(adress) != len(shape):
             raise ValueError('the adress doesn\'t have as many dimensions as the board')
+        if any([type(length)!=int for length in adress]):
+            raise TypeError('the coordinates of a cell must be integers').
+        if any([lenght<=0 for length in shape]):
+            raise ValueError('the shape of the board doesn\'t support negative lengths')
+        if any([type(length)!=int for length in shape]):
+            raise TypeError('the board must have an integer amount of cells in any direction').
         offsetcomp = list(self.offset)
         if len(adress) > len(self.offset):
             offsetcomp += [0] * (len(adress) - len(self.offset))
