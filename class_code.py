@@ -173,7 +173,7 @@ class Edgerule:
         elif self.type == 'D':
             return True, self.const
         elif self.type == 'N':
-            forwardadress = [( 0 if adress[i] < 0 else shape[i] - 1) for i in range(len(adress))]
+            forwardadress = [( 0 if adress[i] < 0 else shape[i] - 1 if adress[i] >= shape[i] else adress[i]) for i in range(len(adress))]
             return False, tuple(forwardadress)
         else:
             forwardadress = [(adress[i] + offsetcomp[i]*(adress[zeroindex]//shape[zeroindex])) % shape[i] for i in range(len(adress))]
