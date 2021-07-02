@@ -775,7 +775,7 @@ class Automata(Board):
 
         '''
         self.rules=rules
-        super().__init__(self, matrix, edgerules)
+        super().__init__(matrix, edgerules)
     
     def nextstate(self, rules : Rule = None) -> None:
         '''
@@ -831,65 +831,3 @@ class Automata(Board):
 
         '''
         return f'{self.rules}\n {self.edgerules} \n {self.cells}'
-    
-    
-'''
-life = Totalistic([(0,0),(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)], [3], [2, 3])
-torus = Edgerule()
-testboard = Emptyboard((5, 5), torus)
-testboard.cells[1, 1] = 1
-testboard.cells[1, 2] = 1
-testboard.cells[2, 2] = 1
-testboard.cells[2, 3] = 1
-testboard.cells[3, 1] = 1
-print(testboard.cells)
-testboard.advance(6,life)
-print(testboard.cells)
-'''
-'''
-def r30(neighbourhood):
-    key={(0,0,0):0,
-     (0,0,1):1,
-     (0,1,0):1,
-     (0,1,1):1,
-     (1,0,0):1,
-     (1,0,1):0,
-     (1,1,0):0,
-     (1,1,1):0,
-     }
-    return key[neighbourhood]
-
-rule30 = Rule([(-1,),(0,),(1,)],r30)
-same = Edgerule('N')
-testboard = Emptyboard((8,),same)
-testboard[1-1]=1
-testboard[4-1]=1
-testboard[5-1]=1
-testboard[7-1]=1
-print(testboard)
-
-while input('')!='exit':
-    testboard.nextstate(rule30)
-    print(testboard)
-'''
-'''
-if __name__ == '__main__':
-    print('starting program\n')
-    time.sleep(4)
-    if input('do you want to build a cellular automata?\n y/n  ') == 'y':
-        print('for game of life, type 1')
-        print('for a custom cellular automata, press 2')
-        if choice:=input('1/2  ') == '1'
-            pass
-        elif choice=='2'
-            pass
-        else:
-            pass
-        print('\n first of all, let\'s choose a neighbourhood.')
-        time.sleep(1)
-        print('for ')
-        neighbourhood
-        while input() == '':
-            pass    
-    print('goodbye')
-'''
