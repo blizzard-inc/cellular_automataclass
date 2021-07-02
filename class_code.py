@@ -549,7 +549,16 @@ class Totalistic(Rule):
             list of number of live neighbours for which the current cell will turn alive.
         live : set
             list of number of live neighbours for which the current cell will stay alive.
-
+        
+        Raises
+        ----------
+        ValueError
+            The amount of living neighbours needs to be positive 
+                and the amount of living neighbours cannot proceed the amount of neighbours
+        
+        TypeError
+            The amount of living neighbours needs to be an integer.
+           
         Returns
         -------
         None.
@@ -578,7 +587,15 @@ class Totalistic(Rule):
             
             neighbours : list
                 list of states of the neighbours of a cell
-            
+        
+            Raises
+            ----------
+            ValueError
+                The number of neighbours needs to match the size of the neighbourhood.
+        
+            TypeError
+                The state of a cell needs to be a 0 or 1.
+           
             Returns
             -------
                 int
