@@ -248,8 +248,8 @@ class Rule:
             raise ValueError('The number of neighbours doesn\'t match with the neighbourhood of the rule')
         if any([type(neighbour) != int for neighbour in neighbours]):
             raise TypeError('The state of any neighbour is always an integer')
-        if not self.f:
-            raise ValueError
+        if self.f == None:
+            raise ValueError('the next state function has not been defined')
         return self.f(neighbours)
 
     def __str__(self) -> str:
