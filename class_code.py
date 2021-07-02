@@ -121,6 +121,8 @@ class Edgerule:
             const = 0    
             if not offset :
                 offset = (0, )
+            if any([type(change) != int for change in offset]):
+                raise TypeError('the offsets must be integers')
         else:
             offset = (0, )    
             if not const:
