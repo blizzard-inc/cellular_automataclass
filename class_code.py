@@ -10,7 +10,15 @@ class Neighbourhood:
         ----------
         reladresses : list
             relative coordinates of the neighbours of the cell.
-
+   
+        Raises
+        ----------
+        ValueError
+            Te coordinates need to be of the same dimension.
+        
+        TypeError
+            The adresses need to be tuples and the coordinates of the adress need to be integers
+        
         Returns
         -------
         None.
@@ -52,7 +60,12 @@ class Neighbourhood:
             the number of the neighbour.
         val : tuple
             the new adress of the neighbour.
-
+   
+        Raises
+        ----------
+        ValueError
+            The dimension of the old and new adress need to be the same.
+        
         Returns
         -------
         None
@@ -112,6 +125,12 @@ class Edgerule:
             determines what offset is used in each direction. The default is (0,).
         const : int, optional
             the value it returns when type = 'D'. The default is 0.
+   
+        Raises
+        ----------
+        TypeError
+            The offsets need to be integers
+        
         Returns
         ----------
         None.
@@ -141,7 +160,17 @@ class Edgerule:
             the adress of a cell.
         shape : tuple
             shape of the board.
-
+   
+        Raises
+        ----------
+        ValueError
+            The dimension of adress and board need to match, the shape of the board needs to have positive length 
+                and there needs to be a 0 in the offsets
+        
+        TypeError
+            The coordinates of the cell need to be integers 
+                and the amount of cells in each direction of the board must be an integer.
+        
         Returns
         -------
         tuple
@@ -238,7 +267,16 @@ class Rule:
         ----------
         neighbours : tuple
             list of states of the neighbours.
-
+   
+        Raises
+        ----------
+        ValueError
+            The number of neighbours needs to match with the neighbourhood of the rule 
+                and the next state function must be defined.
+        
+        TypeError
+            The state of a neighbours must be an integer.
+        
         Returns
         -------
         int
@@ -287,7 +325,12 @@ class Board:
             array which contains the states of the cells.
         edgerules : Edgerule
             the boundary condition for this instance.
-
+   
+        Raises
+        ----------
+        TypeError
+            All cells of the matrix need to be integers.
+        
         Returns
         -------
         None.
@@ -309,7 +352,16 @@ class Board:
             the adress of the cell.
         adresses : Neighbourhood
             the 'list' of relative adresses.
-
+   
+        Raises
+        ----------
+        ValueError
+            The dimension of adress and the board need to match.
+        
+        TypeError
+           The value of the cells needs to be an integer and the dimension of neighbours adress 
+                and the board need to match.
+        
         Returns
         -------
         neighbours : list
@@ -317,10 +369,10 @@ class Board:
 
         '''
         if len(index) != self.cells.ndim:
-            raise TypeError('the number of dimensions of the adress don\'t match up with that of the board')
+            raise ValueError('the number of dimensions of the adress don\'t match up with that of the board')
         if any([type(coordinate)!=int for coordinate in index]):
             raise TypeError('the value of the cells must all be of type integer')
-        if len(neighbours) != self.cells.ndim:
+        if len(reladresses) != self.cells.ndim:
             raise TypeError('the number of dimensions of the neighbours adresses don\'t match up with that of the board')
         neighbours = []
         for reladress in reladresses:
@@ -342,7 +394,12 @@ class Board:
         ----------
         nextstatefunc : Rule
             the rule with which the next states of the board are to be determined.
-
+        
+        Raises
+        ----------
+        ValueError
+            nextstatefunc needs to be specified
+        
         Returns 
         -------
         None
@@ -368,6 +425,11 @@ class Board:
             the rule with which the next states of the board are to be determined.
         steps : int, optional
             the number of steps to be taken. The default is 1
+        
+        Raises
+        ----------
+        ValueError
+            rule must be specified and steps cannot be lower than 1.
 
         Returns
         -------
@@ -453,7 +515,15 @@ class Emptyboard(Board):
             the dimensions of the new board.
         edgerules : Edgerule
             the boundary conditions for this new board.
-
+        
+        Raises
+        ----------
+        ValueError
+            The length of the dimensions need to be positive.
+        
+        TypeError
+           The dimensions need to be integers
+           
         Returns
         -------
         None.
