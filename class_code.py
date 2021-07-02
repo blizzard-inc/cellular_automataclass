@@ -284,8 +284,8 @@ class Rule:
         '''
         if len(neighbours) != len(self.neighbourhood):
             raise ValueError('The number of neighbours doesn\'t match with the neighbourhood of the rule')
-        if any([type(neighbour) != int for neighbour in neighbours]):
-            raise TypeError('The state of any neighbour is always an integer')
+        if any([type(neighbour) != np.int32 for neighbour in neighbours]):
+            raise TypeError('The state of any neighbour is always an numpy.int32')
         if self.f == None:
             raise ValueError('the next state function has not been defined')
         return self.f(neighbours)
@@ -372,7 +372,8 @@ class Board:
             raise ValueError('the number of dimensions of the adress don\'t match up with that of the board')
         if any([type(coordinate)!=int for coordinate in index]):
             raise TypeError('the value of the cells must all be of type integer')
-        if len(reladresses) != self.cells.ndim:
+        if len(reladresses[0]) != self.cells.ndim:
+
             raise TypeError('the number of dimensions of the neighbours adresses don\'t match up with that of the board')
         neighbours = []
         for reladress in reladresses:
