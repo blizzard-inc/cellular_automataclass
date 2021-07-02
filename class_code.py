@@ -189,9 +189,9 @@ class Edgerule:
             the readable description.
 
         '''
-        if self.type == 'N':
+        if self.kind == 'N':
             return f'von Neumann boundary, offsets are {self.offset}'
-        elif self.type == 'D':
+        elif self.kind == 'D':
             return f'Dirichlet boundary, constant = {self.const}'
         else:            
             return f'wrapping boundary, offsets are {self.offset}'
