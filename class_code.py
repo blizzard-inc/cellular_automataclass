@@ -99,13 +99,13 @@ class Neighbourhood:
         return self.__str__()
 
 class Edgerule:
-    def __init__(self, type : str = None, offset : tuple = None, const : int = None) -> None:
+    def __init__(self, kind : str = None, offset : tuple = None, const : int = None) -> None:
         '''
         creates an instance of the class
 
         Parameters
         ----------
-        type : str, optional
+        kind : str, optional
             determines wether dirichlet, neumann or wrapping boundry conditions are used.
                 The default is 'wrap'.
         offset : tuple, optional
@@ -116,8 +116,8 @@ class Edgerule:
         ----------
         None.
         '''
-        if not type in ['D','N']:
-            type = 'wrap'
+        if not kind in ['D','N']:
+            kind = 'wrap'
             const = 0    
             if not offset :
                 offset = (0, )
@@ -127,7 +127,7 @@ class Edgerule:
             offset = (0, )    
             if not const:
                 const = 0
-        self.type = type
+        self.kind = kind
         self.offset = offset
         self.const = const
         
@@ -170,9 +170,9 @@ class Edgerule:
         zeroindex=offsetcomp.index(0)
         if all([ (0 <= adress[i] < shape[i]) for i in range(len(adress)) ]):
             return False, tuple(adress)
-        elif self.type == 'D':
+        elif self.kind == 'D':
             return True, self.const
-        elif self.type == 'N':
+        elif self.kind == 'N':
             forwardadress = [( 0 if adress[i] < 0 else shape[i] - 1 if adress[i] >= shape[i] else adress[i]) for i in range(len(adress))]
             return False, tuple(forwardadress)
         else:
