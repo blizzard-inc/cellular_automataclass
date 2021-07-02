@@ -320,6 +320,8 @@ class Board:
             raise TypeError('the number of dimensions of the adress don\'t match up with that of the board')
         if any([type(coordinate)!=int for coordinate in index]):
             raise TypeError('the value of the cells must all be of type integer')
+        if len(neighbours) != self.cells.ndim:
+            raise TypeError('the number of dimensions of the neighbours adresses don\'t match up with that of the board')
         neighbours = []
         for reladress in reladresses:
             absadress = [index[i] + reladress[i] for i in range(len(index))]
