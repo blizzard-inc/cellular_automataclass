@@ -350,13 +350,13 @@ class Board:
         '''
         if not nextstatefunc:
             raise ValueError('a rule must be specified. Are you missing an argument?')
-        nextboard = Emptyboard(self.cells.shape, self.edgerules)
+        nextboard = np.zeros(self.cells.shape,int)
         adressbook = nextstatefunc.neighbourhood
         for index in np.ndenumerate(self.cells):
             neighbours = tuple(self.neighbourhood(index[0], adressbook))
-            nextboard.cells[index[0]] = nextstatefunc(neighbours)
+            nextboard[index[0]] = nextstatefunc(neighbours)
             
-        self.cells = nextboard.cells
+        self.cells = nextboard
         
     def advance(self, rule : Rule = None, steps : int = None) -> None:
         '''
