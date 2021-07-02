@@ -583,7 +583,7 @@ class Moorehood(Neighbourhood):
             raise ValueError
         self.dim = dim
         self.length = length
-        neighbours=[[]]
+        neighbours = [[]]
         for _ in range(dim):
             for number in range(len(neighbours)):
                 current_house = neighbours[number]
@@ -591,7 +591,7 @@ class Moorehood(Neighbourhood):
                 for d in range(1, length + 1):
                     neighbours += [current_house + [d], current_house + [-d]]
         for number in range(len(neighbours)):
-            neighbours[number]=tuple(neighbours[number])
+            neighbours[number] = tuple(neighbours[number])
         
         super().__init__(neighbours)
 
@@ -650,7 +650,7 @@ class Neumannhood(Neighbourhood):
                 for d in range(1, length - distance + 1):
                     neighbours += [current_house + [d], current_house + [-d]]
         for number in range(len(neighbours)):
-            neighbours[number]=tuple(neighbours[number])
+            neighbours[number] = tuple(neighbours[number])
         
         super().__init__(neighbours)
 
