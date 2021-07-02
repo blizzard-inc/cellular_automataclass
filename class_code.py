@@ -775,7 +775,7 @@ class Automata(Board):
 
         '''
         self.rules=rules
-        super().__init__(self, matrix, edgerules)
+        super().__init__(matrix, edgerules)
     
     def nextstate(self, rules : Rule = None) -> None:
         '''
