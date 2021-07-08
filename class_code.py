@@ -408,7 +408,7 @@ class Board:
         '''
         if not nextstatefunc:
             raise ValueError('a rule must be specified. Are you missing an argument?')
-        nextboard = np.zeros(self.cells.shape,int)
+        nextboard = np.zeros(self.cells.shape,np.int32)
         adressbook = nextstatefunc.neighbourhood
         for index in np.ndenumerate(self.cells):
             neighbours = tuple(self.neighbourhood(index[0], adressbook))
