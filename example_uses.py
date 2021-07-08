@@ -7,7 +7,7 @@ testboard.cells[2, 2] = 1
 testboard.cells[2, 3] = 1
 testboard.cells[3, 1] = 1
 print(testboard.cells)
-testboard.advance(6,life)
+testboard.advance(life,6)
 print(testboard.cells)
 
 
