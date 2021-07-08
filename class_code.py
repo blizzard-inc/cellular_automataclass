@@ -534,7 +534,7 @@ class Emptyboard(Board):
             raise ValueError('you cannot use non-positive lengths for any dimensions')
         if any([type(length)!= int for length in dimensions]):
             raise TypeError('all dimensions for a board must be integers')
-        cells = np.zeros(dimensions, int)
+        cells = np.zeros(dimensions, np.int32)
         super().__init__(cells, edgerules)
 
 class Totalistic(Rule):
