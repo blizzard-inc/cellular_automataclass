@@ -336,7 +336,7 @@ class Board:
         None.
 
         '''
-        if matrix.dtype != int:
+        if matrix.dtype != np.int32:
             raise TypeError('all cells must have integer type')
         
         self.edgerules = edgerules
